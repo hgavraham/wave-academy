@@ -172,10 +172,11 @@ resource "aws_eip_association" "wafp1-eip-bastion" {
 
 resource "tls_private_key" "wafp1-p1-tpk" {
   algorithm = "RSA"
+  rsa_bits = "4096"
 }
 
 locals {
-  private_key_filename = "wafp1-ssh-key.pem"
+  private_key_filename = "wafp1-public"
 }
 
 resource "aws_key_pair" "wafp1-key-pair" {
@@ -190,6 +191,82 @@ resource "local_file" "wafp1-pem" {
   content         = "${tls_private_key.wafp1-p1-tpk.private_key_pem}"
   file_permission = "0600"
 }
+
+#<-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-> role and policy for bastion instance 
+
+resource "aws_iam_role" "wafp1_bastion_ec2_full_role" {
+    name = "wafp1_bastion_ec2_full_role"
+  
+    assume_role_policy = jsonencode({
+      Version = "2012-10-17"
+      Statement = [
+        {
+          Action = "sts:AssumeRole"
+          Effect = "Allow"
+          Sid    = ""
+          Principal = {
+            Service = "ec2.amazonaws.com"
+          }
+        },
+      ]
+    })
+  }
+
+resource "aws_iam_role_policy" "wafp1_bastion_ec2_full_policy" {
+  name = "test_policy"
+  role = aws_iam_role.wafp1_bastion_ec2_full_role.id
+
+  # Terraform's "jsonencode" function converts a
+  # Terraform expression result to valid JSON syntax.
+  policy = jsonencode({
+    "Version": "2012-10-17",
+    "Statement": [
+        {
+            "Action": "ec2:*",
+            "Effect": "Allow",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "elasticloadbalancing:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "cloudwatch:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "autoscaling:*",
+            "Resource": "*"
+        },
+        {
+            "Effect": "Allow",
+            "Action": "iam:CreateServiceLinkedRole",
+            "Resource": "*",
+            "Condition": {
+                "StringEquals": {
+                    "iam:AWSServiceName": [
+                        "autoscaling.amazonaws.com",
+                        "ec2scheduled.amazonaws.com",
+                        "elasticloadbalancing.amazonaws.com",
+                        "spot.amazonaws.com",
+                        "spotfleet.amazonaws.com",
+                        "transitgateway.amazonaws.com"
+                    ]
+                }
+            }
+        }
+    ]
+})
+}
+
+resource "aws_iam_instance_profile" "ansible_full_access_ec2_profile" {
+  name = "ansible_full_access_ec2_profile"
+  role = "${aws_iam_role.wafp1_bastion_ec2_full_role.name}"
+}
+
 #<-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-> bastion instance
 
 //bastion instance
@@ -202,6 +279,7 @@ resource "aws_instance" "bastion" {
   //the Public SSH key
   key_name = "${aws_key_pair.wafp1-key-pair.key_name}"
   associate_public_ip_address = false
+  iam_instance_profile = "${aws_iam_instance_profile.ansible_full_access_ec2_profile.name}"
   //volume
   root_block_device {
     delete_on_termination = true
@@ -255,27 +333,14 @@ resource "null_resource" "copy-bastion-pem" {
   }
 }
 
-resource "null_resource" "local-exec" {
-  provisioner "local-exec" {
-    command = "echo 'export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY' > test.delete ; exho 'export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_KEY >> test.delete"
-    interpreter = ["/bin/bash", "-c"]
-  }
-}
-
-
 resource "null_resource" "remote-exec" {
-  depends_on = [
-    null_resource.copy-bastion-pem,
-    null_resource.local-exec,
-  ]
-
   provisioner "remote-exec" {
     inline = [
-      "chmod 0600 ~/.ssh/wafp1.pem",
       "sudo amazon-linux-extras install ansible2 -y",
       "sudo yum install python3 python3-pip -y",
       "sudo yum install python2-pip -y",
       "pip install boto3",
+      "sudo chmod 0600 /home/ec2-user/.ssh/wafp1.pem",
       "tar -xvf ~/ansible.tar",
       "cd ~/ansible",
       "ansible-playbook -i aws_ec2.yaml playbook/install-todo-webapp.yaml",
@@ -569,11 +634,13 @@ resource "aws_lb_target_group_attachment" "wafp1-alb-tg-to-webserver1" {
   target_group_arn = "${aws_lb_target_group.wafp1-webapp-tg.arn}"
   target_id        = "${aws_instance.webserver1.id}"
   port             = 8080
+  depends_on = [aws_instance.webserver1]
 }
 resource "aws_lb_target_group_attachment" "wafp1-alb-tg-to-webserver2" {
   target_group_arn = "${aws_lb_target_group.wafp1-webapp-tg.arn}"
   target_id        = "${aws_instance.webserver2.id}"
   port             = 8080
+  depends_on = [aws_instance.webserver2]
 }
 
 //resource "aws_alb_target_group_attachment" "test" {
