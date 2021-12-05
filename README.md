@@ -13,15 +13,19 @@ export AWS_SECRET_KEY="xxxxxxxxxxxxxxxxxxxx"
 ```
 git clone https://github.com/hgavraham/wave-academy.git
 ```
-2. Checkout to part1
+2. After the Clone change Directody to "wave-academy"
+```
+cd wave-academy/
+```
+3. Checkout to part1
 ```
 git checkout part1
 ```
-3. From the current directory you did the pull nun 
+4. From the current directory you did the pull nun 
 ``` 
 terraform init
 ```
-4. After you run the `terraform init` you can deploy the system by
+5. After you run the `terraform init` you can deploy the system by
 ```
 terraform apply -auto-approve
 ```
