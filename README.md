@@ -40,3 +40,10 @@ ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.
 
 https://user-images.githubusercontent.com/48091445/144739998-75783295-dbae-4b1e-b243-8a30fcc4a9a2.mp4
 
+
+## Running the `terraform apply` and `terraform destroy` time measurement - Optional
+#### If you want to measure how long it took you to deploy or delete the environment
+#### You can run the following scripts
+
+terraform apply -auto-aprove
+bash ./
