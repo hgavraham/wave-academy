@@ -35,7 +35,7 @@ Example
 ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.com/"
 ```
 #### Environment Architecture
-<img src="https://user-images.githubusercontent.com/48091445/144740969-aadfb2db-183d-47d2-af94-ceb34f9c6291.png" width="500" height="600" />
+<img src="https://user-images.githubusercontent.com/48091445/144741465-2db939b9-57b7-4e9a-babd-e6f3dc24d7a2.png" width="500" height="600" />
 
 ## Part 1 Video Demo
 
