@@ -29,4 +29,8 @@ terraform init
 ```
 terraform apply -auto-approve
 ```
-
+6. When the deploy is finished please open the link that you get from the output `ToDoList_WebApp_DNS_name`
+```
+Example
+ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.com/"
+```
