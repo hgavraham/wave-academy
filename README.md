@@ -34,3 +34,4 @@ terraform apply -auto-approve
 Example
 ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.com/"
 ```
+## Video Demonstration
