@@ -36,3 +36,7 @@ ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.
 ```
 ## Part 1 Video Demo
 
+
+
+https://user-images.githubusercontent.com/48091445/144739998-75783295-dbae-4b1e-b243-8a30fcc4a9a2.mp4
+
