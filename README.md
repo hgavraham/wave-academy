@@ -12,7 +12,7 @@ export AWS_SECRET_KEY="xxxxxxxxxxxxxxxxxxxx"
 
 1. Pull the current git by:
 ```
-git pull https://github.com/hgavraham/wave-academy.git
+git clone https://github.com/hgavraham/wave-academy.git
 ```
 2. Checkout to part1
 ```
