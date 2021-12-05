@@ -9,7 +9,7 @@ export AWS_SECRET_KEY="xxxxxxxxxxxxxxxxxxxx"
 ```
 
 
-1. Pull the current git by:
+1. Clone the current git by:
 ```
 git clone https://github.com/hgavraham/wave-academy.git
 ```
