@@ -4,7 +4,6 @@
 To use this repo there are some prerequisites that you need to perform
 Create tow (2) env variable on you local machine 
 ```
-> linux
 export AWS_ACCESS_KEY="xxxxxxxxxx"
 export AWS_SECRET_KEY="xxxxxxxxxxxxxxxxxxxx"
 ```
