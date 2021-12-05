@@ -34,9 +34,11 @@ terraform apply -auto-approve
 Example
 ToDoList_WebApp_DNS_name = "http://wafp1-alb-xxxxxxxxxx.us-east-1.elb.amazonaws.com/"
 ```
+Environment Architecture
+![Part1 Diagram](https://user-images.githubusercontent.com/48091445/144740969-aadfb2db-183d-47d2-af94-ceb34f9c6291.png)
+
+
 ## Part 1 Video Demo
-
-
 
 https://user-images.githubusercontent.com/48091445/144739998-75783295-dbae-4b1e-b243-8a30fcc4a9a2.mp4
 
